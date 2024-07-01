@@ -6,12 +6,24 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"gorm.io/gorm"
 
 	"github.com/ars0915/tonfura-exercise/constant"
 	"github.com/ars0915/tonfura-exercise/entity"
 	"github.com/ars0915/tonfura-exercise/repo"
 	"github.com/ars0915/tonfura-exercise/util/cTypes"
 )
+
+func (h BookingHandler) GetBooking(ctx context.Context, id uint) (booking entity.Booking, err error) {
+	booking, err = h.db.GetBooking(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return booking, ErrorBookingNotFound
+		}
+		return booking, errors.Wrap(err, "get booking")
+	}
+	return
+}
 
 type CreateBookingParam struct {
 	FlightID uint
@@ -118,7 +130,7 @@ func (h BookingHandler) CheckInBooking(ctx context.Context, bookingID uint) (res
 			if err = tx.UpdateBooking(bookingID, entity.Booking{Status: cTypes.String(constant.BookingStatusCheckedIn)}); err != nil {
 				return errors.Wrap(err, "update booking")
 			}
-			if err = tx.UpdateClass(class.ID, entity.Class{CheckInAmount: cTypes.Uint(*class.CheckInAmount + 1)}); err != nil {
+			if err = tx.UpdateClass(class.ID, entity.Class{CheckInAmount: cTypes.Uint(*class.CheckInAmount + *booking.Amount)}); err != nil {
 				return errors.Wrap(err, "update class")
 			}
 			return nil
@@ -362,6 +374,77 @@ func (h BookingHandler) GiveUpBooking(ctx context.Context, bookingID uint) (book
 
 		return nil
 	})
+
+	return
+}
+
+func (h BookingHandler) UpdateBooking(ctx context.Context, bookingID uint, data entity.Booking) (booking entity.Booking, err error) {
+	err = repo.WithinTransaction(ctx, h.db, func(txCtx context.Context) error {
+		tx := repo.ExtractTx(txCtx)
+
+		booking, err = tx.GetBooking(bookingID)
+		if err != nil {
+			return errors.Wrap(err, "get booking")
+		}
+
+		var class entity.Class
+		if data.ClassID != nil {
+			class, err = tx.GetClass(*data.ClassID)
+			if err != nil {
+				return errors.Wrap(err, "get class")
+			}
+		}
+
+		if data.FlightID != nil {
+			if data.ClassID != nil && *data.FlightID != class.FlightID {
+				return ErrorClassNotBelongToFlight
+			}
+
+			if data.ClassID == nil && *data.FlightID != booking.Class.FlightID {
+				return ErrorClassNotBelongToFlight
+			}
+		} else if data.ClassID != nil && *booking.FlightID != class.FlightID {
+			return ErrorClassNotBelongToFlight
+		}
+
+		if err = h.redis.Lock(ctx, genClassLockKey(class.ID)); err != nil {
+			return err
+		}
+		defer h.redis.UnLock(ctx, genClassLockKey(class.ID))
+
+		if *class.CheckInAmount+*booking.Amount <= *class.SeatAmount {
+			if err = tx.UpdateBooking(bookingID, entity.Booking{
+				FlightID: data.FlightID,
+				ClassID:  data.ClassID,
+				Status:   data.Status,
+			}); err != nil {
+				return errors.Wrap(err, "update booking")
+			}
+
+			updateClass := entity.Class{
+				Sold:          cTypes.Uint(*class.Sold + *booking.Amount),
+				CheckInAmount: cTypes.Uint(*class.CheckInAmount + *booking.Amount),
+			}
+			if *class.Sold+*booking.Amount >= *class.SeatAmount {
+				updateClass.Status = cTypes.String(constant.StatusSoldOut)
+			}
+
+			if err = tx.UpdateClass(class.ID, updateClass); err != nil {
+				return errors.Wrap(err, "update class")
+			}
+			return nil
+		} else {
+			return ErrorNoAvailableSeat
+		}
+	})
+	if err != nil {
+		return entity.Booking{}, err
+	}
+
+	booking, err = h.db.GetBooking(bookingID)
+	if err != nil {
+		return entity.Booking{}, errors.Wrap(err, "get booking")
+	}
 
 	return
 }

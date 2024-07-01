@@ -9,28 +9,21 @@ import (
 
 type (
 	Handler interface {
-		Task
 		Flight
 		Booking
 	}
 )
 
 type (
-	Task interface {
-		ListTasks(ctx context.Context, param entity.ListTaskParam) (tasks []entity.Task, count int64, err error)
-		GetTask(ctx context.Context, id uint) (task entity.Task, err error)
-		CreateTask(ctx context.Context, t entity.Task) (entity.Task, error)
-		UpdateTask(ctx context.Context, id uint, t entity.Task) (entity.Task, error)
-		DeleteTask(ctx context.Context, id uint) error
-	}
-
 	Flight interface {
 		ListFlights(ctx context.Context, param entity.ListFlightParam) (flights []entity.Flight, count int64, err error)
 	}
 
 	Booking interface {
+		GetBooking(ctx context.Context, id uint) (booking entity.Booking, err error)
 		CreateBooking(ctx context.Context, param CreateBookingParam) (booking entity.Booking, err error)
 		CheckInBooking(ctx context.Context, bookingID uint) (result CheckInResult, err error)
 		GiveUpBooking(ctx context.Context, bookingID uint) (booking entity.Booking, err error)
+		UpdateBooking(ctx context.Context, bookingID uint, data entity.Booking) (booking entity.Booking, err error)
 	}
 )

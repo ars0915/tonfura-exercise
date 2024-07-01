@@ -14,14 +14,10 @@ type appRouter struct {
 
 func (h HttpHandler) getRouter() (routes []appRouter) {
 	return []appRouter{
-		{http.MethodGet, "/tasks", h.ListTasksHandler},
-		{http.MethodPost, "/tasks", h.CreateTaskHandler},
-		{http.MethodPut, "/tasks/:taskID", h.UpdateTaskHandler},
-		{http.MethodDelete, "/tasks/:taskID", h.DeleteTaskHandler},
-
 		{http.MethodGet, "/flight/", h.listFlightsHandler},
 
 		{http.MethodPost, "/booking/", h.createBookingHandler},
+		{http.MethodPatch, "/booking/:bookingID/", h.updateBookingHandler},
 		{http.MethodPost, "/check-in/", h.checkInHandler},
 		{http.MethodPost, "/give-up/", h.giveUpHandler},
 	}

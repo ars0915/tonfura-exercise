@@ -9,16 +9,18 @@ import (
 
 func resourceCheck(rH HttpHandler) cGin.HandlerFunc {
 	return func(ctx *cGin.Context) {
-		taskIDStr := ctx.Param("taskID")
+		bookingIDStr := ctx.Param("bookingID")
 
-		if len(taskIDStr) > 0 {
-			taskID, err := strconv.Atoi(taskIDStr)
+		var bookingID int
+		var err error
+		if len(bookingIDStr) > 0 {
+			bookingID, err = strconv.Atoi(bookingIDStr)
 			if err != nil {
 				ctx.WithError(err).Response(http.StatusBadRequest, "Invalid ID")
 				return
 			}
 
-			if _, err = rH.Usecase().GetTask(ctx, uint(taskID)); err != nil {
+			if _, err = rH.Usecase().GetBooking(ctx, uint(bookingID)); err != nil {
 				ctx.WithError(err).Response(http.StatusInternalServerError, "Check Task failed")
 				return
 			}

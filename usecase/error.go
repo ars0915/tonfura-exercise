@@ -7,10 +7,10 @@ import (
 )
 
 var (
-	ErrorTaskNotFound = cGin.CustomError{
+	ErrorBookingNotFound = cGin.CustomError{
 		Code:     1001,
 		HTTPCode: http.StatusNotFound,
-		Message:  "Task not found",
+		Message:  "Booking not found",
 	}
 
 	ErrorFlightSoldOut = cGin.CustomError{
@@ -29,5 +29,11 @@ var (
 		Code:     1004,
 		HTTPCode: http.StatusBadRequest,
 		Message:  "No available seat",
+	}
+
+	ErrorClassNotBelongToFlight = cGin.CustomError{
+		Code:     1005,
+		HTTPCode: http.StatusBadRequest,
+		Message:  "Class not belong to flight",
 	}
 )

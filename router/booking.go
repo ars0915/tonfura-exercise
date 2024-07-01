@@ -2,10 +2,12 @@ package router
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/ars0915/tonfura-exercise/constant"
+	"github.com/ars0915/tonfura-exercise/entity"
 	"github.com/ars0915/tonfura-exercise/usecase"
 	"github.com/ars0915/tonfura-exercise/util/cGin"
 )
@@ -97,6 +99,45 @@ func (rH *HttpHandler) giveUpHandler(c *gin.Context) {
 	}
 
 	result, err := rH.h.GiveUpBooking(ctx, body.BookingID)
+	if err != nil {
+		ctx.WithError(err).Response(http.StatusInternalServerError, "Give up Failed")
+		return
+	}
+
+	ctx.WithData(result).Response(http.StatusOK, "")
+}
+
+type updateBookingBody struct {
+	FlightID *uint   `json:"flight_id"`
+	ClassID  *uint   `json:"class_id"`
+	Status   *string `json:"status"`
+}
+
+func (rH *HttpHandler) updateBookingHandler(c *gin.Context) {
+	ctx := cGin.NewContext(c)
+	bookingIDStr := ctx.Param("bookingID")
+
+	var bookingID int
+	var err error
+	if len(bookingIDStr) > 0 {
+		bookingID, err = strconv.Atoi(bookingIDStr)
+		if err != nil {
+			ctx.WithError(err).Response(http.StatusBadRequest, "Invalid ID")
+			return
+		}
+	}
+
+	body := updateBookingBody{}
+	if err := c.BindJSON(&body); err != nil {
+		ctx.WithError(err).Response(http.StatusBadRequest, "parse error")
+		return
+	}
+
+	result, err := rH.h.UpdateBooking(ctx, uint(bookingID), entity.Booking{
+		FlightID: body.FlightID,
+		ClassID:  body.ClassID,
+		Status:   body.Status,
+	})
 	if err != nil {
 		ctx.WithError(err).Response(http.StatusInternalServerError, "Give up Failed")
 		return
