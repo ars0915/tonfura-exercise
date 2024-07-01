@@ -48,4 +48,7 @@ type ListFlightParam struct {
 	SortBy        *string
 	Offset        *int
 	Limit         *int
+
+	WithClass   bool
+	WithBooking bool
 }

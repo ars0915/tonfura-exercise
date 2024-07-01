@@ -18,5 +18,7 @@ func (h HttpHandler) getRouter() (routes []appRouter) {
 		{http.MethodPost, "/tasks", h.CreateTaskHandler},
 		{http.MethodPut, "/tasks/:taskID", h.UpdateTaskHandler},
 		{http.MethodDelete, "/tasks/:taskID", h.DeleteTaskHandler},
+
+		{http.MethodGet, "/flights/", h.listFlightsHandler},
 	}
 }
