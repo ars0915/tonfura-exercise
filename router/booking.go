@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/ars0915/tonfura-exercise/constant"
 	"github.com/ars0915/tonfura-exercise/usecase"
 	"github.com/ars0915/tonfura-exercise/util/cGin"
 )
@@ -40,4 +41,45 @@ func (rH *HttpHandler) createBookingHandler(c *gin.Context) {
 	}
 
 	ctx.WithData(data).Response(http.StatusOK, "")
+}
+
+type checkInBody struct {
+	BookingID uint `json:"booking_id" binding:"required"`
+}
+
+type checkInResponse struct {
+	Status     string             `json:"status"`
+	Suggestion *checkInSuggestion `json:"suggestion"`
+}
+
+type checkInSuggestion struct {
+	FlightID uint `json:"flight_id"`
+	ClassID  uint `json:"class_id"`
+}
+
+func (rH *HttpHandler) checkInHandler(c *gin.Context) {
+	ctx := cGin.NewContext(c)
+	body := checkInBody{}
+	if err := c.BindJSON(&body); err != nil {
+		ctx.WithError(err).Response(http.StatusBadRequest, "parse error")
+		return
+	}
+
+	result, err := rH.h.CheckInBooking(ctx, body.BookingID)
+	if err != nil {
+		ctx.WithError(err).Response(http.StatusInternalServerError, "Check-in Failed")
+		return
+	}
+
+	response := checkInResponse{
+		Status: result.Status,
+	}
+	if result.Status == constant.BookingCheckInFail {
+		response.Suggestion = &checkInSuggestion{
+			FlightID: result.SuggestFlightID,
+			ClassID:  result.SuggestClassID,
+		}
+	}
+
+	ctx.WithData(response).Response(http.StatusOK, "")
 }

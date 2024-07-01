@@ -41,12 +41,13 @@ func (t Flight) MarshalJSON() ([]byte, error) {
 }
 
 type ListFlightParam struct {
-	Source        *string
-	Destination   *string
-	DepartureDate *time.Time
-	SortBy        *string
-	Offset        *int
-	Limit         *int
+	Source         *string
+	Destination    *string
+	DepartureDate  *time.Time
+	DepartureAfter *time.Time
+	SortBy         *string
+	Offset         *int
+	Limit          *int
 
 	WithClass   bool
 	WithBooking bool

@@ -16,6 +16,7 @@ type Class struct {
 	Price          *uint          `json:"price" gorm:"not null;default:0"`
 	Status         *string        `json:"status" gorm:"type:varchar(32);not null;default:'available'"`
 	Sold           *uint          `json:"sold" gorm:"not null;default:0"`
+	CheckInAmount  *uint          `json:"check_in_amount" gorm:"not null;default:0"`
 	CreatedAt      time.Time      `json:"-"`
 	UpdatedAt      time.Time      `json:"-"`
 	DeletedAt      gorm.DeletedAt `json:"-"`

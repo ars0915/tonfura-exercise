@@ -49,6 +49,10 @@ func (s *AppRepo) getFlightDB(param entity.ListFlightParam) *gorm.DB {
 		db.Where("departure_at >= ? AND departure_at < ?", param.DepartureDate, param.DepartureDate.AddDate(0, 0, 1))
 	}
 
+	if param.DepartureAfter != nil {
+		db.Where("departure_at > ?", param.DepartureAfter)
+	}
+
 	if param.SortBy != nil {
 		db.Order(*param.SortBy)
 	} else {

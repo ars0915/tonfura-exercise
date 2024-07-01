@@ -31,6 +31,8 @@ type (
 		UpdateFlight(id uint, flight entity.Flight) (err error)
 
 		CreateBooking(booking entity.Booking) (entity.Booking, error)
+		GetBooking(bookingID uint) (booking entity.Booking, err error)
+		UpdateBooking(bookingID uint, booking entity.Booking) error
 
 		UpdateClass(id uint, class entity.Class) (err error)
 	}

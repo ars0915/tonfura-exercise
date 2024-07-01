@@ -30,5 +30,6 @@ type (
 
 	Booking interface {
 		CreateBooking(ctx context.Context, param CreateBookingParam) (booking entity.Booking, err error)
+		CheckInBooking(ctx context.Context, bookingID uint) (result CheckInResult, err error)
 	}
 )

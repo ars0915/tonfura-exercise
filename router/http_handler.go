@@ -22,5 +22,6 @@ func (h HttpHandler) getRouter() (routes []appRouter) {
 		{http.MethodGet, "/flight/", h.listFlightsHandler},
 
 		{http.MethodPost, "/booking/", h.createBookingHandler},
+		{http.MethodPost, "/check-in/", h.checkInHandler},
 	}
 }

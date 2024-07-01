@@ -24,4 +24,10 @@ var (
 		HTTPCode: http.StatusNotFound,
 		Message:  "Class not found",
 	}
+
+	ErrorNoAvailableSeat = cGin.CustomError{
+		Code:     1004,
+		HTTPCode: http.StatusBadRequest,
+		Message:  "No available seat",
+	}
 )

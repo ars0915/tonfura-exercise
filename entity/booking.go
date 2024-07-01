@@ -19,9 +19,9 @@ type Booking struct {
 	UpdatedAt time.Time      `json:"-"`
 	DeletedAt gorm.DeletedAt `json:"-"`
 
-	User   User   `gorm:"foreignKey:UserID" json:"user"`
-	Flight Flight `gorm:"foreignKey:FlightID" json:"flight"`
-	Class  Class  `gorm:"foreignKey:ClassID" json:"class"`
+	User   User   `gorm:"foreignKey:UserID" json:"-"`
+	Flight Flight `gorm:"foreignKey:FlightID" json:"-"`
+	Class  Class  `gorm:"foreignKey:ClassID" json:"-"`
 }
 
 func (t Booking) MarshalJSON() ([]byte, error) {
