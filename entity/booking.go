@@ -9,9 +9,9 @@ import (
 
 type Booking struct {
 	ID        uint           `json:"id" gorm:"primaryKey"`
-	FlightID  uint           `json:"flight_id"`
-	ClassID   uint           `json:"class_id"`
-	UserID    uint           `json:"user_id"`
+	FlightID  *uint          `json:"flight_id"`
+	ClassID   *uint          `json:"class_id"`
+	UserID    *uint          `json:"user_id"`
 	Price     *uint          `json:"price" gorm:not null;default:0""`
 	Amount    *uint          `json:"amount" gorm:not null;default:0""`
 	Status    *string        `json:"status" gorm:"type:varchar(64);not null;default:'to_be_confirmed'"`

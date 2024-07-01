@@ -35,6 +35,7 @@ type (
 		UpdateBooking(bookingID uint, booking entity.Booking) error
 
 		UpdateClass(id uint, class entity.Class) (err error)
+		GetClass(id uint) (class entity.Class, err error)
 	}
 
 	Redis interface {

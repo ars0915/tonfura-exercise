@@ -23,5 +23,6 @@ func (h HttpHandler) getRouter() (routes []appRouter) {
 
 		{http.MethodPost, "/booking/", h.createBookingHandler},
 		{http.MethodPost, "/check-in/", h.checkInHandler},
+		{http.MethodPost, "/give-up/", h.giveUpHandler},
 	}
 }

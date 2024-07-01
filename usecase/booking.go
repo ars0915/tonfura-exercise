@@ -59,9 +59,9 @@ func (h BookingHandler) CreateBooking(ctx context.Context, param CreateBookingPa
 		}
 
 		if booking, err = tx.CreateBooking(entity.Booking{
-			FlightID: param.FlightID,
-			UserID:   param.UserID,
-			ClassID:  param.ClassID,
+			FlightID: cTypes.Uint(param.FlightID),
+			UserID:   cTypes.Uint(param.UserID),
+			ClassID:  cTypes.Uint(param.ClassID),
 			Price:    cTypes.Uint(param.Price),
 			Amount:   cTypes.Uint(param.Amount),
 		}); err != nil {
@@ -102,7 +102,7 @@ func (h BookingHandler) CheckInBooking(ctx context.Context, bookingID uint) (res
 			return errors.Wrap(err, "get booking")
 		}
 
-		flight, err := tx.GetFlight(booking.FlightID)
+		flight, err := tx.GetFlight(*booking.FlightID)
 		if err != nil {
 			return errors.Wrap(err, "get flight")
 		}
@@ -309,4 +309,59 @@ func handleNextFlight(tx repo.App, currentFlight entity.Flight, booking entity.B
 		}
 	}
 	return CheckInResult{}, ErrorNoAvailableSeat
+}
+
+func (h BookingHandler) GiveUpBooking(ctx context.Context, bookingID uint) (booking entity.Booking, err error) {
+	err = repo.WithinTransaction(ctx, h.db, func(txCtx context.Context) error {
+		tx := repo.ExtractTx(txCtx)
+
+		booking, err = tx.GetBooking(bookingID)
+		if err != nil {
+			return errors.Wrap(err, "get booking")
+		}
+
+		flight, err := tx.GetFlight(*booking.FlightID)
+		if err != nil {
+			return errors.Wrap(err, "get flight")
+		}
+
+		suggestion, err := handleNextFlight(tx, flight, booking)
+		if err != nil {
+			return err
+		}
+
+		if err = tx.UpdateBooking(bookingID, entity.Booking{
+			FlightID: cTypes.Uint(suggestion.SuggestFlightID),
+			ClassID:  cTypes.Uint(suggestion.SuggestClassID),
+			Status:   cTypes.String(constant.BookingStatusCheckedIn),
+		}); err != nil {
+			return errors.Wrap(err, "update booking")
+		}
+
+		class, err := tx.GetClass(suggestion.SuggestClassID)
+		if err != nil {
+			return errors.Wrap(err, "get class")
+		}
+
+		updateClass := entity.Class{
+			Sold:          cTypes.Uint(*class.Sold + *booking.Amount),
+			CheckInAmount: cTypes.Uint(*class.CheckInAmount + *booking.Amount),
+		}
+		if *class.Sold+*booking.Amount >= *class.SeatAmount {
+			updateClass.Status = cTypes.String(constant.StatusSoldOut)
+		}
+
+		if err = tx.UpdateClass(suggestion.SuggestClassID, updateClass); err != nil {
+			return errors.Wrap(err, "update class")
+		}
+
+		booking, err = tx.GetBooking(bookingID)
+		if err != nil {
+			return errors.Wrap(err, "get booking")
+		}
+
+		return nil
+	})
+
+	return
 }

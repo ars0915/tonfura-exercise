@@ -83,3 +83,24 @@ func (rH *HttpHandler) checkInHandler(c *gin.Context) {
 
 	ctx.WithData(response).Response(http.StatusOK, "")
 }
+
+type giveUpBody struct {
+	BookingID uint `json:"booking_id" binding:"required"`
+}
+
+func (rH *HttpHandler) giveUpHandler(c *gin.Context) {
+	ctx := cGin.NewContext(c)
+	body := giveUpBody{}
+	if err := c.BindJSON(&body); err != nil {
+		ctx.WithError(err).Response(http.StatusBadRequest, "parse error")
+		return
+	}
+
+	result, err := rH.h.GiveUpBooking(ctx, body.BookingID)
+	if err != nil {
+		ctx.WithError(err).Response(http.StatusInternalServerError, "Give up Failed")
+		return
+	}
+
+	ctx.WithData(result).Response(http.StatusOK, "")
+}
