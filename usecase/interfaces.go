@@ -10,6 +10,7 @@ import (
 type (
 	Handler interface {
 		Task
+		Flight
 	}
 )
 
@@ -20,7 +21,9 @@ type (
 		CreateTask(ctx context.Context, t entity.Task) (entity.Task, error)
 		UpdateTask(ctx context.Context, id uint, t entity.Task) (entity.Task, error)
 		DeleteTask(ctx context.Context, id uint) error
+	}
 
+	Flight interface {
 		ListFlights(ctx context.Context, param entity.ListFlightParam) (flights []entity.Flight, count int64, err error)
 	}
 )

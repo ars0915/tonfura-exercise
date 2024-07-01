@@ -6,6 +6,7 @@ import (
 
 type AppHandler struct {
 	Task
+	Flight
 }
 
 type NewHandlerOption func(*AppHandler)
@@ -32,4 +33,18 @@ func NewTaskHandler(db repo.App) *TaskHandler {
 
 func WithTask(i Task) func(h *AppHandler) {
 	return func(h *AppHandler) { h.Task = i }
+}
+
+type FlightHandler struct {
+	db repo.App
+}
+
+func NewFlightHandler(db repo.App) *FlightHandler {
+	return &FlightHandler{
+		db: db,
+	}
+}
+
+func WithFlight(i *FlightHandler) func(h *AppHandler) {
+	return func(h *AppHandler) { h.Flight = i }
 }
