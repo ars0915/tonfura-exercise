@@ -1,6 +1,8 @@
 package repo
 
 import (
+	"context"
+
 	"github.com/ars0915/tonfura-exercise/entity"
 )
 
@@ -26,5 +28,15 @@ type (
 		ListFlights(param entity.ListFlightParam) (f []entity.Flight, err error)
 		GetFlightsCount(param entity.ListFlightParam) (count int64, err error)
 		GetFlight(id uint) (flight entity.Flight, err error)
+		UpdateFlight(id uint, flight entity.Flight) (err error)
+
+		CreateBooking(booking entity.Booking) (entity.Booking, error)
+
+		UpdateClass(id uint, class entity.Class) (err error)
+	}
+
+	Redis interface {
+		Lock(ctx context.Context, lockKey string) error
+		UnLock(ctx context.Context, lockKey string) error
 	}
 )

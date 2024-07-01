@@ -11,6 +11,7 @@ type (
 	Handler interface {
 		Task
 		Flight
+		Booking
 	}
 )
 
@@ -25,5 +26,9 @@ type (
 
 	Flight interface {
 		ListFlights(ctx context.Context, param entity.ListFlightParam) (flights []entity.Flight, count int64, err error)
+	}
+
+	Booking interface {
+		CreateBooking(ctx context.Context, param CreateBookingParam) (booking entity.Booking, err error)
 	}
 )

@@ -11,7 +11,9 @@ import (
 
 	"github.com/ars0915/tonfura-exercise/config"
 	"github.com/ars0915/tonfura-exercise/pkg/db"
+	"github.com/ars0915/tonfura-exercise/pkg/rediscluster"
 	repoDB "github.com/ars0915/tonfura-exercise/repo/db"
+	repoRedis "github.com/ars0915/tonfura-exercise/repo/rediscluster"
 	"github.com/ars0915/tonfura-exercise/router"
 	"github.com/ars0915/tonfura-exercise/usecase"
 	"github.com/ars0915/tonfura-exercise/util/log"
@@ -83,7 +85,13 @@ func init() {
 		db := repoDB.New(pkgDB)
 		db.Migrate()
 
-		uHandler := usecase.InitHandler(db)
+		pkgRedis, err := rediscluster.NewRedisClient(config.Conf)
+		if err != nil {
+			return err
+		}
+		redis := repoRedis.New(pkgRedis)
+
+		uHandler := usecase.InitHandler(db, redis)
 
 		service := router.NewHandler(config.Conf, uHandler)
 

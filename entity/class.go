@@ -10,11 +10,12 @@ import (
 type Class struct {
 	ID             uint           `json:"id" gorm:"primaryKey"`
 	FlightID       uint           `json:"flight_id"`
-	Type           string         `json:"type" gorm:"type:varchar(32);not null;default:'economy'"`
-	SeatAmount     uint           `json:"seat_amount" gorm:"not null;default:0"`
-	OversellAmount uint           `json:"oversell_amount" gorm:"not null;default:0"`
-	Price          uint           `json:"price" gorm:"not null;default:0"`
-	Status         string         `json:"status" gorm:"type:varchar(32);not null;default:'available'"`
+	Type           *string        `json:"type" gorm:"type:varchar(32);not null;default:'economy'"`
+	SeatAmount     *uint          `json:"seat_amount" gorm:"not null;default:0"`
+	OversellAmount *uint          `json:"oversell_amount" gorm:"not null;default:0"`
+	Price          *uint          `json:"price" gorm:"not null;default:0"`
+	Status         *string        `json:"status" gorm:"type:varchar(32);not null;default:'available'"`
+	Sold           *uint          `json:"sold" gorm:"not null;default:0"`
 	CreatedAt      time.Time      `json:"-"`
 	UpdatedAt      time.Time      `json:"-"`
 	DeletedAt      gorm.DeletedAt `json:"-"`

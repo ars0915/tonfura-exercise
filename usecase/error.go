@@ -12,4 +12,16 @@ var (
 		HTTPCode: http.StatusNotFound,
 		Message:  "Task not found",
 	}
+
+	ErrorFlightSoldOut = cGin.CustomError{
+		Code:     1002,
+		HTTPCode: http.StatusBadRequest,
+		Message:  "Flight sold out",
+	}
+
+	ErrorClassNotFound = cGin.CustomError{
+		Code:     1003,
+		HTTPCode: http.StatusNotFound,
+		Message:  "Class not found",
+	}
 )

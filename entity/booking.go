@@ -12,9 +12,9 @@ type Booking struct {
 	FlightID  uint           `json:"flight_id"`
 	ClassID   uint           `json:"class_id"`
 	UserID    uint           `json:"user_id"`
-	Price     uint           `json:"price"`
-	Amount    uint           `json:"amount"`
-	Status    string         `json:"status" gorm:"type:varchar(64);not null;default:'to_be_confirmed'"`
+	Price     *uint          `json:"price" gorm:not null;default:0""`
+	Amount    *uint          `json:"amount" gorm:not null;default:0""`
+	Status    *string        `json:"status" gorm:"type:varchar(64);not null;default:'to_be_confirmed'"`
 	CreatedAt time.Time      `json:"-"`
 	UpdatedAt time.Time      `json:"-"`
 	DeletedAt gorm.DeletedAt `json:"-"`

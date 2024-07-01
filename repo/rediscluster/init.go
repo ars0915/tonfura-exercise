@@ -1,15 +1,15 @@
-package redis
+package rediscluster
 
-import "gorm.io/gorm"
+import (
+	"github.com/go-redis/redis/v8"
+)
 
-// AppRepo is interface structure
-type AppRepo struct {
-	db *gorm.DB
+type RedisRepo struct {
+	client *redis.ClusterClient
 }
 
-// New func implements the storage interface for app
-func New(db *gorm.DB) *AppRepo {
-	return &AppRepo{
-		db: db,
+func New(client *redis.ClusterClient) *RedisRepo {
+	return &RedisRepo{
+		client: client,
 	}
 }

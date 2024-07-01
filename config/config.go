@@ -20,9 +20,10 @@ var Conf ConfENV
 var once sync.Once
 
 type ConfENV struct {
-	Core SectionCore
-	Log  SectionLog
-	DB   SectionDB
+	Core  SectionCore
+	Log   SectionLog
+	DB    SectionDB
+	Redis SectionRedis
 }
 
 type SectionCore struct {
@@ -44,6 +45,10 @@ type SectionDB struct {
 	Password     string
 	MaxIdleConns int
 	MaxOpenConns int
+}
+
+type SectionRedis struct {
+	Hosts string
 }
 
 func InitConf(confPath string) error {
@@ -106,6 +111,8 @@ func LoadConf(confPath string) (ConfENV, error) {
 	conf.DB.Database = viper.GetString("db_database")
 	conf.DB.MaxIdleConns = viper.GetInt("db_max_idle_conns")
 	conf.DB.MaxOpenConns = viper.GetInt("db_max_open_conns")
+
+	conf.Redis.Hosts = viper.GetString("redis_hosts")
 
 	return conf, nil
 }

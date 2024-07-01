@@ -59,8 +59,15 @@ func (s *AppRepo) getFlightDB(param entity.ListFlightParam) *gorm.DB {
 }
 
 func (s *AppRepo) GetFlight(id uint) (flight entity.Flight, err error) {
-	if err = s.db.Where(`"id" = ?`, id).Preload("Classes").Preload("Bookings").First(&flight).Error; err != nil {
+	if err = s.db.Where(`"id" = ?`, id).Preload("Classes").First(&flight).Error; err != nil {
 		return flight, err
 	}
 	return
+}
+
+func (s *AppRepo) UpdateFlight(id uint, flight entity.Flight) (err error) {
+	if err = s.db.Where("id = ?", id).Updates(flight).Error; err != nil {
+		return err
+	}
+	return nil
 }
