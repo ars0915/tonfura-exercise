@@ -20,9 +20,9 @@ var Conf ConfENV
 var once sync.Once
 
 type ConfENV struct {
-	Core   SectionCore
-	Log    SectionLog
-	SQLite SectionSQLite
+	Core SectionCore
+	Log  SectionLog
+	DB   SectionDB
 }
 
 type SectionCore struct {
@@ -36,9 +36,14 @@ type SectionLog struct {
 	Level  string
 }
 
-type SectionSQLite struct {
-	Database string
-	MaxConn  int
+type SectionDB struct {
+	Host         string
+	Port         string
+	Database     string
+	Username     string
+	Password     string
+	MaxIdleConns int
+	MaxOpenConns int
 }
 
 func InitConf(confPath string) error {
@@ -94,8 +99,13 @@ func LoadConf(confPath string) (ConfENV, error) {
 	conf.Log.Level = viper.GetString("log_level")
 	conf.Log.Output = viper.GetString("log_output")
 
-	conf.SQLite.Database = viper.GetString("sqlite_database")
-	conf.SQLite.MaxConn = viper.GetInt("sqlite_db_max_conn")
+	conf.DB.Host = viper.GetString("db_host")
+	conf.DB.Port = viper.GetString("db_port")
+	conf.DB.Username = viper.GetString("db_username")
+	conf.DB.Password = viper.GetString("db_password")
+	conf.DB.Database = viper.GetString("db_database")
+	conf.DB.MaxIdleConns = viper.GetInt("db_max_idle_conns")
+	conf.DB.MaxOpenConns = viper.GetInt("db_max_open_conns")
 
 	return conf, nil
 }

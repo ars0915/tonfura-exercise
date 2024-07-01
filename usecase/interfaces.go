@@ -4,7 +4,7 @@ package usecase
 import (
 	"context"
 
-	"github.com/ars0915/gogolook-exercise/entity"
+	"github.com/ars0915/tonfura-exercise/entity"
 )
 
 type (

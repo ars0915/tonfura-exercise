@@ -1,6 +1,6 @@
 package constant
 
 const (
-	ServiceName        = "go-template"
+	ServiceName        = "tonfura-exercise"
 	ResponseCodePrefix = 1
 )

@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	"github.com/ars0915/gogolook-exercise/entity"
+	"github.com/ars0915/tonfura-exercise/entity"
 )
 
 func (s *AppRepo) Migrate() {
@@ -27,7 +27,7 @@ func (s *AppRepo) Migrate() {
 
 	m.InitSchema(func(tx *gorm.DB) error {
 		logrus.Info("Create Tables...")
-		if err := s.db.AutoMigrate(&entity.Task{}); err != nil {
+		if err := s.db.AutoMigrate(&entity.Flight{}, &entity.Booking{}, &entity.Class{}, &entity.User{}); err != nil {
 			return err
 		}
 		return nil

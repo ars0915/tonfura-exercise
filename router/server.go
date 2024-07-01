@@ -11,9 +11,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	"github.com/ars0915/gogolook-exercise/config"
-	"github.com/ars0915/gogolook-exercise/constant"
-	"github.com/ars0915/gogolook-exercise/util/cGin"
+	"github.com/ars0915/tonfura-exercise/config"
+	"github.com/ars0915/tonfura-exercise/constant"
+	"github.com/ars0915/tonfura-exercise/util/cGin"
 )
 
 func (rH Handler) RunServer(ctx context.Context) (err error) {

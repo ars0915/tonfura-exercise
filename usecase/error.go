@@ -3,7 +3,7 @@ package usecase
 import (
 	"net/http"
 
-	"github.com/ars0915/gogolook-exercise/util/cGin"
+	"github.com/ars0915/tonfura-exercise/util/cGin"
 )
 
 var (

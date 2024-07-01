@@ -1,6 +1,6 @@
 package usecase
 
-import "github.com/ars0915/gogolook-exercise/repo"
+import "github.com/ars0915/tonfura-exercise/repo"
 
 func InitHandler(db repo.App) Handler {
 	task := NewTaskHandler(db)

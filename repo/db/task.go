@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/ars0915/gogolook-exercise/entity"
+	"github.com/ars0915/tonfura-exercise/entity"
 )
 
 func (s *AppRepo) ListTasks(param entity.ListTaskParam) (t []entity.Task, err error) {

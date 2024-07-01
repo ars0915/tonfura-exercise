@@ -1,24 +1,42 @@
 package db
 
 import (
-	"github.com/glebarez/sqlite"
+	"fmt"
+	"time"
+
 	"github.com/pkg/errors"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"github.com/ars0915/gogolook-exercise/config"
+	"github.com/ars0915/tonfura-exercise/config"
 )
 
 func NewDB(config config.ConfENV) (*gorm.DB, error) {
-	gDB, err := gorm.Open(sqlite.Open(config.SQLite.Database), &gorm.Config{})
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s",
+		config.DB.Host,
+		config.DB.Username,
+		config.DB.Password,
+		config.DB.Database,
+		config.DB.Port,
+	)
+	db, err := gorm.Open(postgres.Open(dsn))
 	if err != nil {
 		return nil, errors.Wrap(err, "init db")
 	}
 
-	sqlDB, err := gDB.DB()
+	sqlDB, err := db.DB()
 	if err != nil {
 		return nil, errors.Wrap(err, "connect db")
 	}
-	sqlDB.SetMaxOpenConns(config.SQLite.MaxConn)
 
-	return gDB, nil
+	sqlDB.SetMaxIdleConns(config.DB.MaxIdleConns)
+	sqlDB.SetMaxOpenConns(config.DB.MaxOpenConns)
+	sqlDB.SetConnMaxLifetime(time.Hour)
+	
+	err = sqlDB.Ping()
+	if err != nil {
+		return nil, errors.Wrap(err, "ping db")
+	}
+
+	return db, nil
 }

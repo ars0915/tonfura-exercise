@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"github.com/ars0915/gogolook-exercise/repo"
+	"github.com/ars0915/tonfura-exercise/repo"
 )
 
 type AppHandler struct {

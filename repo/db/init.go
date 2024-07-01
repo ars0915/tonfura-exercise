@@ -3,7 +3,7 @@ package db
 import (
 	"gorm.io/gorm"
 
-	"github.com/ars0915/gogolook-exercise/repo"
+	"github.com/ars0915/tonfura-exercise/repo"
 )
 
 // New func implements the storage interface for app

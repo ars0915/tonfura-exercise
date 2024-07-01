@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 
-	"github.com/ars0915/gogolook-exercise/entity"
+	"github.com/ars0915/tonfura-exercise/entity"
 )
 
 func (h TaskHandler) ListTasks(ctx context.Context, param entity.ListTaskParam) (tasks []entity.Task, count int64, err error) {

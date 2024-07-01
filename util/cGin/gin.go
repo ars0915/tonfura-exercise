@@ -9,9 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"github.com/ars0915/gogolook-exercise/util/cError"
-	"github.com/ars0915/gogolook-exercise/util/log"
-	"github.com/ars0915/gogolook-exercise/util/paging"
+	"github.com/ars0915/tonfura-exercise/util/cError"
+	"github.com/ars0915/tonfura-exercise/util/log"
+	"github.com/ars0915/tonfura-exercise/util/paging"
 )
 
 type meta struct {
