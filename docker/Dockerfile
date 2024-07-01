@@ -12,6 +12,7 @@ RUN go build -o ${APP_NAME} -tags=jsoniter .
 FROM alpine:3.18
 ARG APP_NAME
 COPY --from=builder /go/src/github.com/ars0915/${APP_NAME}/${APP_NAME} .
+COPY --from=builder /go/src/github.com/ars0915/${APP_NAME}/.env .
 ENV APP_NAME=${APP_NAME}
 CMD ./$APP_NAME
 EXPOSE 8080

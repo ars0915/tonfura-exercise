@@ -1,7 +1,19 @@
 version: "3"
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        - APP_NAME=tonfura-exercise
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - redis-cluster-creator
   postgres:
+    container_name: tonfura-postgres
     image: postgres:14-alpine
     ports:
       - 5432:5432
@@ -12,6 +24,7 @@ services:
       - POSTGRES_USER=tonfura
       - POSTGRES_DB=tonfura
   redis-node1:
+    container_name: tonfura-redis1
     build:
       context: ./docker/redis
       dockerfile: DockerFile
@@ -21,6 +34,7 @@ services:
     restart: always
     entrypoint: [redis-server, /etc/redis/redis.conf, --port,"7000", --cluster-announce-ip,"${ip}"]
   redis-node2:
+    container_name: tonfura-redis2
     build:
       context: ./docker/redis
       dockerfile: DockerFile
@@ -30,6 +44,7 @@ services:
     restart: always
     entrypoint: [redis-server, /etc/redis/redis.conf,--port,"7001",--cluster-announce-ip,"${ip}"]
   redis-node3:
+    container_name: tonfura-redis3
     build:
       context: ./docker/redis
       dockerfile: DockerFile
