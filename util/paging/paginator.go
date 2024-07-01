@@ -14,10 +14,10 @@ const (
 
 // Paginator page data
 type Paginator struct {
-	TotalCount int  `json:"recordCount" snake:"record_count"`
-	TotalPage  int  `json:"pageCount" snake:"page_count"`
-	Page       int  `json:"absolutePage" snake:"absolute_page"`
-	Limit      int  `json:"pageSize" snake:"page_size"`
+	TotalCount int  `json:"record_count" snake:"record_count"`
+	TotalPage  int  `json:"page_count" snake:"page_count"`
+	Page       int  `json:"absolute_page" snake:"absolute_page"`
+	Limit      int  `json:"page_size" snake:"page_size"`
 	Offset     int  `json:"-" snake:"-"`
 	SnakeCase  bool `json:"-" snake:"-"`
 }
