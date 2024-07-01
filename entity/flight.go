@@ -11,6 +11,7 @@ type Flight struct {
 	ID          uint           `json:"id" gorm:"primaryKey" `
 	Source      string         `json:"source" gorm:"type:varchar(64);not null;default:''"`
 	Destination string         `json:"destination" gorm:"type:varchar(64);not null;default:''"`
+	DepartureAt time.Time      `json:"departure_at"`
 	Status      string         `json:"status" gorm:"type:varchar(32);not null;default:'available'"`
 	CreatedAt   time.Time      `json:"-"`
 	UpdatedAt   time.Time      `json:"-"`
@@ -41,6 +42,10 @@ func (t Flight) MarshalJSON() ([]byte, error) {
 }
 
 type ListFlightParam struct {
-	Offset *int
-	Limit  *int
+	Source        *string
+	Destination   *string
+	DepartureDate *time.Time
+	SortBy        *string
+	Offset        *int
+	Limit         *int
 }
