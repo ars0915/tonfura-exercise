@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=1qaz2wsx
+      - POSTGRES_USER=tonfura
+      - POSTGRES_DB=tonfura
+  redis-node1:
+    build:
+      context: ./docker/redis
+      dockerfile: DockerFile
+    ports:
+      - "7000:7000"
+      - "17000:17000"
+    restart: always
+    entrypoint: [redis-server, /etc/redis/redis.conf, --port,"7000", --cluster-announce-ip,"${ip}"]
+  redis-node2:
+    build:
+      context: ./docker/redis
+      dockerfile: DockerFile
+    ports:
+      - "7001:7001"
+      - "17001:17001"
+    restart: always
+    entrypoint: [redis-server, /etc/redis/redis.conf,--port,"7001",--cluster-announce-ip,"${ip}"]
+  redis-node3:
+    build:
+      context: ./docker/redis
+      dockerfile: DockerFile
+    ports:
+      - "7002:7002"
+      - "17002:17002"
+    restart: always
+    entrypoint: [redis-server, /etc/redis/redis.conf,--port,"7002",--cluster-announce-ip,"${ip}"]
+  redis-cluster-creator:
+    image: redis:6.0.3
+    entrypoint: [/bin/sh,-c,'echo "yes" | redis-cli --cluster create ${ip}:7000 ${ip}:7001 ${ip}:7002 --cluster-replicas 1']
+    depends_on:
+      - redis-node1
+      - redis-node2
+      - redis-node3
