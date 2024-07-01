@@ -165,3 +165,31 @@
 ```
 ip=$(ipconfig getifaddr en0) docker-compose up -d --build
 ```
+### 遇到 redis cluster error 時
+1. 先進入 redis 中檢查是否有連線
+```
+redis-cli -c -h localhost -p 7000
+
+localhost:7000> cluster nodes
+```
+若 cluster 未連線
+```
+590b9464986e3dcd4ad4bf13b01f849b66d34081 192.168.0.188:7000@17000 myself,master - 0 0 0 connected
+```
+2. 手動連線至其他台
+```
+localhost:7000> cluster meet 192.168.0.188 7001
+localhost:7000> cluster meet 192.168.0.188 7002
+```
+此時 cluster 應有連線
+```
+localhost:7000> cluster nodes
+
+590b9464986e3dcd4ad4bf13b01f849b66d34081 192.168.0.188:7000@17000 myself,master - 0 1719859685000 1 connected
+6f806f4c3ee69b9457970b4b9124bfdeedbfdbf3 192.168.0.188:7001@17001 master - 0 1719859686159 0 connected
+1d10905117cee988993f99a36711676312d7ce5d 192.168.0.188:7002@17002 master - 0 1719859686660 2 connected
+```
+3. 修復 hash slot
+```
+redis-cli --cluster fix 192.168.0.188:7000
+```
